@@ -41,7 +41,7 @@ if response.status_code == 200:
   print(data)
   if data:
     if 'def' in data[0]:
-      definition = data[0]['def'][0]['sseq'][0][0][1]['dt']
+      definition = data[0]['def'][0]['sseq'][0][0][1]
       print("**************")
       print(definition)
   
@@ -51,5 +51,4 @@ if response.status_code == 200:
 
 @app.route('/')
 def home_page():
-    word = response.json()
     return render_template('index.html', word=word)
