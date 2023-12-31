@@ -1,0 +1,120 @@
+body {
+    box-sizing: border-box;
+    background-color: black;
+}
+
+.navbar {
+    background-color: #fff;
+    height: 46px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 9999;
+  }
+
+.navbar a:hover {
+  color: #1c94e0;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+ul.nav.navbar-nav {
+  align-items: center;
+}
+
+ul.nav.navbar-nav li {
+  margin: 0 0.5rem;
+  display: flex;
+}
+
+nav form.navbar-form {
+  display: flex;
+  position: relative;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#gameBoard {
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    grid-gap: 5px;
+    padding: 5px;
+    width: 300px;
+    align-items: center;
+    margin: 0px;
+    position: relative;
+}
+
+#gameBoard div {
+  justify-content: center;
+  width: 100%;
+}
+
+.letter {
+
+  border: 2px solid blue;
+  height: 70px;
+  width: 100%;
+  margin: 1px;
+  justify-content: center;
+  color: white;
+  font-size: 40px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+
+#keyboard {
+  align-items: center;
+  height: 200px;
+}
+
+.keyboard-row {
+  touch-action: manipulation;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  font-size: 20px;
+
+}
+
+.keyboard-row button {
+  text-transform: uppercase;
+}
+
+
+#definitionDiv {
+  color: white;
+  font-size: large;
+}
+
+h3 {
+  text-align: center; 
+  font-size: large;
+  color: white;
+}
+
+#result-container {
+  color: white;
+}
+
+.end-game-banner {
+  font-weight: bold;
+  background-color: green;
+  color: white;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  font-size: 20px;
+  text-transform: uppercase;
+
+}
