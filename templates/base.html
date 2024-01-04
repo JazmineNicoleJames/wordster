@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet"
     href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Oswald&family=Space+Grotesk&family=Teko&family=Vina+Sans&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/jquery"></script>
     <script src="https://unpkg.com/popper"></script>
     <script src="https://unpkg.com/bootstrap"></script>
@@ -30,6 +33,7 @@
 
         {% endif %}
         {% if not g.user %}
+        <li><a href="/"> Home </a></li>
         <li><a href="/signup">Sign up</a></li>
         <li><a href="/login">Log in</a></li>
         {% else %}
@@ -43,15 +47,15 @@
     </div>
 </nav>
 
-<div class="container">
+
     {% for category, message in get_flashed_messages(with_categories=True) %}
     <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %}
-  
+
     {% block content %}
     {% endblock %}
   
-  </div>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/static/script.js"></script>
 </body>

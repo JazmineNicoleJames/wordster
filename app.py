@@ -91,14 +91,13 @@ def login_page():
         print('user', user)
         if user:
           session['curr_user'] = user.id
-          flash(f'Hello, {user.username}!')
           return redirect('/start')
         else:
           flash('Invalid login. Please try again.')
 
     return render_template('login.html', form=form)
 
-  
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -122,7 +121,7 @@ def signup():
 
       g.user = user
       session['curr_user'] = user.id
-      flash(f'Hello, {user.username}, thanks for joining.')    
+      flash(f'Hello, {user.first_name}, thanks for joining.')    
 
       return redirect('/start')
 
@@ -138,24 +137,18 @@ def get_random_word():
 
     word = r.random_words(1, word_min_length=5, word_max_length=5)[0]
     print(word)
+
     return word 
-
-
-
-random_word = get_random_word()
-
-
-
-@app.route('/get_word')
-def get_word():
-
-    return jsonify({"wordToGuess": random_word})
 
 
 
 @app.route('/start')
 def start_game():
   """ Begin a game of Wordster."""
+
+  users = User.query.all()
+  print('users', users)
+  random_word = get_random_word()
 
   try:
     session['guesses'] = []
@@ -236,12 +229,18 @@ def check_word():
   guesses_dict = session.get('guesses_dict')
 
   session['final_word'] = final_word
- 
+
   correct_indices = check_correct_indices(final_word, word, current_guess_idx)
   session['correct_indices'] = correct_indices
   
   existing_letters = check_existing_letters(final_word, word, current_guess_idx)
   session['existing_letters'] = existing_letters
+  
+  session['incorrect_letters'] = []
+
+  incorrect_letters = [char for idx, char in enumerate(final_word) if idx not in correct_indices and idx not in existing_letters]
+  session['incorrect_letters'].extend(incorrect_letters)
+  print('incorrect letters:',session['incorrect_letters'])
 
   result = final_word == word
   
@@ -327,7 +326,8 @@ def check_word():
                   'guesses': guesses_dict,
                   'correct_indices': correct_indices,
                   'existing_letters': existing_letters,
-                  'current_guess_idx': session['current_guess_idx'] 
+                  'current_guess_idx': session['current_guess_idx'],
+                  'incorrect_letters': incorrect_letters 
                   })
 
   final_word = ''  

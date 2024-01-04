@@ -7,7 +7,7 @@ db = SQLAlchemy()
 
 class User(db.Model):
     """ User information. """
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer,
                     primary_key = True,
@@ -47,15 +47,13 @@ class User(db.Model):
         """
 
         user = cls.query.filter_by(username=username).first()
-        print('userrrr', user)
-        print('password here', password)
+
         if user:
-            print('okay if user is working')
+
             is_auth = bcrypt.check_password_hash(user.password, password)
-            print('isauth', user)
+
             return user
 
-        print('authentication failed')
         return None
 
 
@@ -72,10 +70,7 @@ class Word(db.Model):
 
     definition = db.Column(db.String)
 
-    """ game = db.relationship("Game", back_populates="word", uselist=False) """
 
-    """ game_id = db.Column(db.Integer,
-                        db.ForeignKey('game.id')) """
 
 
 class Game(db.Model):
@@ -85,9 +80,6 @@ class Game(db.Model):
     id = db.Column(db.Integer,
                         primary_key = True,
                         autoincrement = True)
-
-    """ user_id = db.Column(db.Integer,
-                        db.ForeignKey('user.id')) """
     
     attempts_remaining = db.Column(db.Integer)
 
@@ -96,12 +88,7 @@ class Game(db.Model):
 
     score = db.Column(db.Integer)
 
-    """ word = db.relationship("Word", back_populates="game", uselist=False)
-
-    user = db.relationship("User", backref="game_relation", uselist=False) """
     
-
-
 
 
 class Guess(db.Model):
@@ -111,9 +98,6 @@ class Guess(db.Model):
     id = db.Column(db.Integer,
                         primary_key = True,
                         autoincrement = True)
-
-    """ game_id = db.Column(db.Integer,
-                        db.ForeignKey('game.id')) """
     
     word_guessed = db.Column(db.Text)
 

@@ -1,28 +1,20 @@
 const apiUrl = 'http://localhost:5000/get_word'
 let wordToGuess;
 let wordArr = [];
-let wordsGuessed = []
+let wordsGuessed = [];
 let availableSpace = 0;
-const gameBoard = document.getElementById('gameBoard')
+const gameBoard = document.getElementById('gameBoard');
 let definition;
-let keyboardRows = document.getElementById('keyboard')
+let keyboardRows = document.getElementById('keyboard');
 
-
-
-fetch(apiUrl) 
-    .then((response) => response.json())
-    .then((data) => {
-        wordToGuess = data.wordToGuess;
-    })
-    .catch((error) => {
-        console.error('Error', error);
-    });
 
 
 window.addEventListener('keydown', function(event) {
 
     const keyPressed = event.key.toLowerCase();
-    handleKeyPress(keyPressed);
+    /* if (/^[a-z]$/.test(keyPressed)) { */
+        handleKeyPress(keyPressed);
+   /*  } */
 });
 
     
@@ -137,8 +129,19 @@ async function checkWord(finalWord){
 
             handleCorrectIndices(guessKey, guess, targetLettersCount)            
             handleExistingLetters(guessKey, guess, targetLettersCount)
-        }
 
+        }
+        console.log('data',data)
+        if(data.incorrect_letters) {
+            data.incorrect_letters.forEach((index) => {
+                console.log('index', index)
+                incorrectLetter = index;
+                let selector = `button[data-key="${index}"]`
+                let keyboardLetter = document.querySelector(selector)
+                keyboardLetter.classList.add('incorrect')
+
+            })
+        }
         if(data.solved) {   
             data.correct_indices.forEach((index) => {
                 let divNum = data.guessesKey.substring(5)
@@ -147,6 +150,7 @@ async function checkWord(finalWord){
             });
 
             resultContainer.innerHTML = data.result 
+            
             let defDiv = document.getElementById('definitionDiv')
             let definition = data.definition[1]
             defDiv.innerHTML = `Definition: ${definition.replace(/\{[^,}]*\}/g, '')}`   
@@ -171,6 +175,7 @@ async function checkWord(finalWord){
 }
 
 
+
 function handleCorrectIndices(guessKey, guess, targetLettersCount) {
     if (guess.correct_indices) {
         guess.correct_indices.forEach((index) => {
@@ -192,6 +197,8 @@ function handleCorrectIndices(guessKey, guess, targetLettersCount) {
         });
     }
 }
+
+
 
 function handleExistingLetters(guessKey, guess, targetLettersCount) {
 
@@ -252,29 +259,37 @@ function createBoard() {
     }
 }
 
+const banner = document.createElement('div');
+banner.classList.add('end-game-banner');
+const container = document.getElementById('gameBoard');
 
-function endGameBanner(word){
 
-    const banner = document.createElement('div');
-    banner.classList.add('end-game-banner');
+function endGameBannerFailed(word){
     banner.textContent = `correct word:  ${word}`
-    const container = document.getElementById('gameBoard');
     container.appendChild(banner);
 }
 
+function endGameBannerSolved(word){
+    banner.textContent = `${word} is correct!`
+    container.appendChild(banner);
+}
 
 async function endGame() {
 
     res = await axios.post('/end-game', {definition:definition, score:score});
-
     let word = res.data.word;
     let currentScoreDiv = document.getElementById('currentScore')
 
     if(currentScoreDiv) {
         currentScoreDiv.textContent = `SCORE: ${res.data.score}`;
     }
-    
-    endGameBanner(word);
+    if(res.data.correct_indices.length === 5){
+        endGameBannerSolved(word)
+    }
+    else {
+        endGameBannerFailed(word);
+    }
+
     return res;
 }
 

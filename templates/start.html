@@ -3,18 +3,20 @@
 {% block content %}
 
     {% if g.user %}
-    
-    <h1> Welcome, {{g.user.username}}! </h1>
-    <div id="highestScore"> Highest score: {{g.user.highest_score}}</div>  
+    <div id="welcomeDiv">
+    <div id="welcomeMessage"> Welcome, {{g.user.username}}! </div>
+    <div id="highestScoreContainer"> <div id="highestScore"> Highest score </div>
+    <div id="highestScoreNum">{{g.user.highest_score}}</div>  </div>
+</div>
     {% endif %}  
 
     <div id="container">
         <div id="gameBoard"> 
 
         </div>
-
-        <div id="result-container">
-
+    </div>
+    <div id="result-container">
+<div></div>
         </div>
 
     <div id="keyboard">
@@ -54,9 +56,9 @@
 
         </div>
     </div>
-    <div id="definitionDiv">
-    </div>
     <div id="currentScore">  </div>
+    <div id="definitionDiv"> </div>
+
     </div>
     
 
