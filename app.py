@@ -25,8 +25,8 @@ app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS']=False
 """ toolbar = DebugToolbarExtension(app) """
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///wordster'
+database_url = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 
 connect_db(app)
 
