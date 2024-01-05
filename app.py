@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request, redirect, flash, session, g, jsonify
 import requests
 from wonderwords import RandomWord
-import secret
 from models import db, connect_db, User, Game, Guess, Word, bcrypt
 from forms import LoginForm, AddUserForm
 from wordster import Wordster
 from sqlalchemy.exc import IntegrityError
-
+from dotenv import load_dotenv
+import os
 
 r = RandomWord()
 wordster = Wordster()
-api_key = secret.API_KEY_SERVICE
+load_dotenv()
+api_key = os.getenv('API_KEY')
+print('apikey', api_key)
 numOfAttempts = 6
 CURR_USER_KEY = "curr_user"
 

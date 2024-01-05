@@ -1,3 +1,4 @@
 .DS_Store
 secret.py
 venv/
+.env
