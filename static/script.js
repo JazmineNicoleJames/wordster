@@ -12,9 +12,10 @@ let keyboardRows = document.getElementById('keyboard');
 window.addEventListener('keydown', function(event) {
 
     const keyPressed = event.key.toLowerCase();
-    /* if (/^[a-z]$/.test(keyPressed)) { */
+    if (/^[a-z]$/.test(keyPressed) || keyPressed === 'enter') {
+        console.log(keyPressed)
         handleKeyPress(keyPressed);
-   /*  } */
+    }
 });
 
     
