@@ -190,6 +190,8 @@ def start_game():
 
             return render_template('start.html', board=board, highest_score=highest_score, definition=definition, user=user, word=word, word_split=word_split)
 
+    return redirect('/start')
+    
   except Exception as e:
     print(f"An error occurred: {e}")
     flash("An error occurred. Please try again.")
