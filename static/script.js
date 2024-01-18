@@ -6,7 +6,7 @@ let availableSpace = 0;
 const gameBoard = document.getElementById('gameBoard');
 let definition;
 let keyboardRows = document.getElementById('keyboard');
-
+let resultContainer = document.getElementById('result-container');
 
 
 window.addEventListener('keydown', function(event) {
@@ -32,27 +32,53 @@ keyboardBtns.forEach(function(btn) {
 })
 
 
-function handleKeyPress(key) {
+async function handleKeyPress(key) {
 
     const del = document.getElementById('del');
     
     if(key === 'enter' && wordArr.length === 5){
 
         let finalWord = wordArr.join('').replace(/\s*,\s*/g, "");
-        wordsGuessed.push(finalWord);   
-        checkWord(finalWord);
-        wordArr = [];
 
-        if(wordsGuessed.length === 6) {
-            endGame();
-        } 
+        const isValid = await validateWordOnServer(finalWord);
+
+        if (isValid) {
+            wordsGuessed.push(finalWord);
+            checkWord(finalWord);
+            wordArr = [];
+
+            if (wordsGuessed.length === 6) {
+                endGame();
+            }
+        } else {
+            resultContainer.innerHTML = `${finalWord} is not a valid word. Try a different word.`
+        }
     }
-    
-    if(wordArr.length <= 5 && key !== 'enter') {
 
-        if(key !== del) {
+    if (wordArr.length <= 5 && key !== 'enter') {
+        if (key !== del) {
             updateWordsGuessedArr(key);
         }
+    }
+}
+
+async function validateWordOnServer(finalWord) {
+    try {
+        const resp = await fetch('/validate_word', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({finalWord}),
+        });
+
+        if (!resp.ok) {
+            throw new Error('Failed to validate word on the server');
+        }
+
+        const data = await resp.json();
+        return data.isValid;
+    } catch (error) {
+        console.error('Error validating word on the server:', error);
+        return false;
     }
 }
 
@@ -107,9 +133,6 @@ async function checkWord(finalWord){
         let guesses = data.guesses;
         attemptsRemaining = data.attemptsRemaining;
         score = data.score;
-     
-
-        let resultContainer = document.getElementById('result-container');
 
         for(let guessKey in guesses){
             let targetLettersCount = {};

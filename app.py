@@ -12,7 +12,6 @@ r = RandomWord()
 wordster = Wordster()
 load_dotenv()
 api_key = os.getenv('API_KEY')
-print('apikey', api_key)
 numOfAttempts = 6
 CURR_USER_KEY = "curr_user"
 
@@ -86,11 +85,9 @@ def login_page():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        print('username', username)
-        print('password', password)
 
         user = User.authenticate(username, password)
-        print('user', user)
+
         if user:
           session['curr_user'] = user.id
           return redirect('/start')
@@ -138,7 +135,6 @@ def signup():
 def get_random_word():
 
     word = r.random_words(1, word_min_length=5, word_max_length=5)[0]
-    print(word)
 
     return word 
 
@@ -149,7 +145,6 @@ def start_game():
   """ Begin a game of Wordster."""
 
   users = User.query.all()
-  print('users', users)
   random_word = get_random_word()
 
   try:
@@ -191,7 +186,7 @@ def start_game():
             return render_template('start.html', board=board, highest_score=highest_score, definition=definition, user=user, word=word, word_split=word_split)
 
     return redirect('/start')
-    
+
   except Exception as e:
     print(f"An error occurred: {e}")
     flash("An error occurred. Please try again.")
@@ -217,6 +212,33 @@ def check_correct_indices(final_word, word, current_guess_idx):
 def check_existing_letters(final_word, word, current_guess_idx):
   return [(idx) for idx, char in enumerate(final_word) if char in word]
 
+
+def validate_word(word):
+  url = f'https://www.dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={api_key}'
+  response = requests.get(url)
+
+  if response.status_code == 200:
+    data = response.json()
+    if word in response.text:
+      return data
+    else:
+      return None
+  else:
+    return None
+
+@app.route('/validate_word', methods=['POST'])
+def validate_word_route():
+  """ Check if word(final_word) is a valid word in the dictionary. If not, do not submit word to be checked against target word."""
+
+  data = request.get_json()
+  final_word = data.get('finalWord')
+  is_real_word = validate_word(final_word)
+
+  if not is_real_word:
+    return jsonify({'result': 'Invalid word. Please try again'})
+
+  else:
+   return jsonify({'isValid': is_real_word})
 
 
 @app.route('/check_word', methods=['GET','POST'])
@@ -244,7 +266,6 @@ def check_word():
 
   incorrect_letters = [char for idx, char in enumerate(final_word) if idx not in correct_indices and idx not in existing_letters]
   session['incorrect_letters'].extend(incorrect_letters)
-  print('incorrect letters:',session['incorrect_letters'])
 
   result = final_word == word
   
